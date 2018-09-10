@@ -46,7 +46,7 @@ function printSymbolList(label, symbols, numbering=false, vertical=false, A=[])
             if vertical
                 loglnModia()
             else
-                logModia(", ") 
+                logModia(", ")
             end
         end
 
@@ -54,7 +54,7 @@ function printSymbolList(label, symbols, numbering=false, vertical=false, A=[])
             if vertical
                 logModia(lpad(i, 5, " "), ": ")
             else
-                logModia(i, ": ")      
+                logModia(i, ": ")
             end
         end
 
@@ -64,10 +64,10 @@ function printSymbolList(label, symbols, numbering=false, vertical=false, A=[])
             logModia(prettyfy(symbols[i]))
         end
 
-        if A != [] 
+        if A != []
             if A[i] != 0
                 logModia("A[$i] = $(A[i])")
-            end        
+            end
         end
     end
 
@@ -87,7 +87,7 @@ function showModel(mod, indent="")
     =#
     newIndent = string(indent, "  ")
     loglnModia("Instance(model ", mod.name)
-    
+
     for i in 1:length(mod.initializers)
         if isa(mod.initializers[i], InitVariable)
             logModia(indent, mod.initializers[i].name, " = ")
@@ -121,55 +121,55 @@ function showVariable(v)
             logModia("variability = ", v.variability)
             first = false
         end
-        
+
         if v.typ != Any
             if !first; logModia(", ") end
             logModia("T = ", v.typ)
             first = false
         end
-        
+
         if v.value != nothing
             if !first; logModia(", ") end
             logModia("value = ", v.value)
             first = false
         end
-        
+
         if v.size != nothing
             if !first; logModia(", ") end
             logModia("size = ", v.size)
             first = false
         end
-        
+
         if v.start != nothing
             if !first; logModia(", ") end
             logModia("start = ", v.start)
             first = false
         end
-        
+
         if v.unit != NoUnits
             if !first; logModia(", ") end
             logModia("unit = ", v.unit)
             first = false
         end
-        
+
         if v.min != nothing
             if !first; logModia(", ") end
             logModia("min = ", v.min)
             first = false
         end
-        
+
         if v.max != nothing
             if !first; logModia(", ") end
             logModia("max = ", v.max)
             first = false
         end
-        
+
         if v.flow != false
             if !first; logModia(", ") end
             logModia("flow = ", v.flow)
             first = false
         end
-        
+
         if v.state != true
             if !first; logModia(", ") end
             logModia("state = ", v.state)
@@ -194,32 +194,28 @@ function showInstance(inst, indent="")
     loglnModia("------")
     @show inst
     loglnModia("------")
-    =# 
+    =#
     newIndent = string(indent, "  ")
     loglnModia("@model ", inst.model_name, " begin")
-    for key in keys(inst.variables) 
+    for key in keys(inst.variables)
         if isa(key, Instance)
             logModia(indent, "  ", key, " = ")
             showInstance(inst.variables[key], newIndent)
         else
-            @static if VERSION < v"0.7.0-DEV.2005"
-                keyname = replace(string(key), ".", "_")
-            else
-                keyname = replace(string(key), "." => "_")
-            end
-            logModia(indent, "  ", keyname, " = ") 
+            keyname = replace(string(key), "." => "_")
+            logModia(indent, "  ", keyname, " = ")
             showVariable(inst.variables[key])
         end
     end
-    
+
     if length(inst.equations) > 0
         loglnModia(indent, "@equations begin")
     end
-    
+
     for e in inst.equations
         loglnModia(indent, "  ", prettyPrint(e))
     end
-    
+
     loglnModia(indent, "  end")
     loglnModia(indent, "end")
 end
@@ -236,8 +232,8 @@ function checkSizes(VSizes, ESizes)
     loglnModia()
     scalarV = sum(length(zeros(v)) for v in VSizes)
     scalarE = sum(length(zeros(e)) for e in ESizes)
-    
-    if scalarV != scalarE  
+
+    if scalarV != scalarE
         error("Scalarized system matrix is not square: $scalarE x $scalarV")
         ok = false
     else
@@ -278,7 +274,7 @@ function printJSON(file, inst::Instance, fullName, name, parent="", indent="", l
     loglnModia(file, indent, "{")
     loglnModia(file, indent, "\"id\": \"$(fullName)\",")
     loglnModia(file, indent, "\"class\": \"$(inst.model_name)\",")
-  
+
     params, unknowns = split_variables(vars_of(inst))
     if length(params) > 0
         loglnModia(file, indent, "\"parameters\": {")
@@ -288,16 +284,16 @@ function printJSON(file, inst::Instance, fullName, name, parent="", indent="", l
             i += 1
             logModia(file, indent1, "\"", n, "\"", " : ", p)
             if i < length(params)
-                loglnModia(file, ",") 
+                loglnModia(file, ",")
             else
-                loglnModia(file) 
+                loglnModia(file)
             end
-        end    
+        end
         loglnModia(file, indent, "},")
     end
-  
+
     loglnModia(file, indent, "\"labels\": [{\"text\": \"$name\"}],")
-    
+
     if isPort(inst)
         orientation = if length(search(string(parent), "G")) > 0; "\"NORTH\"" elseif length(search(string(name), "p")) > 0 || length(search(string(name), "in")) > 0; "\"WEST\"" else "\"EAST\"" end
         loglnModia(file, indent, "\"properties\": {\"de.cau.cs.kieler.portSide\": $orientation},")
@@ -308,12 +304,12 @@ function printJSON(file, inst::Instance, fullName, name, parent="", indent="", l
         loglnModia(file, indent, "\"width\": $size,")
         loglnModia(file, indent, "\"height\": $size")
     end
-  
+
     first = true
     for (n, v) in inst.variables
         if isa(v, Instance) && isPort(v) && level > 1 # length(search(string(n), "n")) == 0
             if first
-                loglnModia(file, indent, ", \"ports\": [")        
+                loglnModia(file, indent, ", \"ports\": [")
             else
                 loglnModia(file, indent, ", ")
             end
@@ -330,7 +326,7 @@ function printJSON(file, inst::Instance, fullName, name, parent="", indent="", l
     for (n, v) in inst.variables
         if isa(v, Instance) && (!isPort(v) || level == 1) #  || (isa(v, Instance) && isPort(v) && length(search(string(n), "n")) > 0)
             if first
-                loglnModia(file, indent, ", \"children\": [")        
+                loglnModia(file, indent, ", \"children\": [")
             else
                 loglnModia(file, indent, ", ")
             end
@@ -338,7 +334,7 @@ function printJSON(file, inst::Instance, fullName, name, parent="", indent="", l
             printJSON(file, v, n, n, name, "  " * indent, level + 1)
         end
     end
-    
+
     if !first
         loglnModia(file, indent, "]")
     end
@@ -348,31 +344,31 @@ function printJSON(file, inst::Instance, fullName, name, parent="", indent="", l
     for e in inst.equations
         if isa(e, Connect)
             if first
-                loglnModia(file, indent, ", \"edges\": [") 
+                loglnModia(file, indent, ", \"edges\": [")
             else
                 loglnModia(file, indent, ", ")
             end
-    
+
             first = false
             id += 1
             loglnModia(file, indent, "  {\"id\": \"id$id\",")
-    
+
             if isa(e.a.base, GetField)
                 loglnModia(file, indent, "   \"source\": \"$(e.a.base.name)\",")
                 loglnModia(file, indent, "   \"sourcePort\": \"$(string(e.a.base.name) * string(e.a.name))\",")
             else
-                loglnModia(file, indent, "   \"source\": \"$(e.a.name)\",")        
+                loglnModia(file, indent, "   \"source\": \"$(e.a.name)\",")
             end
-    
+
             if isa(e.b.base, GetField)
                 loglnModia(file, indent, "   \"target\": \"$(e.b.base.name)\",")
                 loglnModia(file, indent, "   \"targetPort\": \"$(string(e.b.base.name) * string(e.b.name))\"}")
             else
-                loglnModia(file, indent, "   \"target\": \"$(e.b.name)\"}")        
+                loglnModia(file, indent, "   \"target\": \"$(e.b.name)\"}")
             end
         end
     end
-    
+
     if !first
         loglnModia(file, indent, "]")
     end

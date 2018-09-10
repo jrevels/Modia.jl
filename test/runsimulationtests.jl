@@ -1,15 +1,7 @@
-
-
 using Modia
-@static if VERSION < v"0.7.0-DEV.2005"
-    using Base.Test
-else
-    using Test
-end
-
+using Test
 
 @testset "RunSimulations" begin
-
     Modia.ModiaLogging.resetTestStatus()
 
     include("models/TestVariableTypes.jl")
@@ -20,7 +12,7 @@ end
     include("models/TestArrayOfComponents.jl")
     include("models/TestConditionalComponents.jl")
     include("models/TestConditionalEquations.jl")
-    
+
     include("models/TestSpatialDiscretization.jl")
 
     #include("models/TestCoupledInertias.jl")
@@ -29,6 +21,5 @@ end
     #include("models/TestRetranslationOmega.jl")
 
     Modia.ModiaLogging.printTestStatus()
-
-end 
+end
 nothing

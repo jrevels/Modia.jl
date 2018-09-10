@@ -6,7 +6,7 @@
 
 ## Introduction
 
-[Modia](https://modiasim.github.io/) is a domain specific extension of [Julia](http://julialang.org/ "Julia") for **modeling and simulation of physical systems**. 
+[Modia](https://modiasim.github.io/) is a domain specific extension of [Julia](http://julialang.org/ "Julia") for **modeling and simulation of physical systems**.
 
 Papers and presentations about Modia:
 
@@ -21,10 +21,19 @@ Component models are defined by `@model` macros. Such models contain definition 
 
 ## Installation
 
-**Modia currently only runs with Julia version 0.6.x.**
+Modia can be installed interactively or programmatically via Julia's package manager.
+
+Interactively:
 
 ```julia
-julia> Pkg.add("Modia")
+# press  `]` at the Julia REPL to enter package mode
+(v1.0) pkg> add Modia
+```
+
+Programmatically:
+
+```julia
+Pkg.add("Modia")
 ```
 
 ## Use
@@ -101,7 +110,7 @@ The version released now is partial since certain prototype functionalities need
 
 - Alias handling
 - Handle overdetermined equations
-- Introduction of partial and block attribute to models 
+- Introduction of partial and block attribute to models
 - Automatic state selection
 - Arrays of components
 - Complex data type

@@ -2,27 +2,23 @@ module Synchronous
 
 using ..Instantiation
 
-import ModiaMath 
+import ModiaMath
 import ModiaMath.ModiaToModiaMath  # ModiaSimulationModel, EventRestart, Restart, positive!, ...
 import ModiaMath.ModiaToModiaMath.ModiaSimulationModel
 import ModiaMath.Restart
 
-@static if VERSION < v"0.7.0-DEV.2005"
-    Nothing = Void 
-end
-
 #= Synchronous Modelica primitives
 
-Clock() 
+Clock()
 Clock(intervalCounter::Int, resolution::Int=1)  # Add version with rational number
-Clock(interval::Float64) 
-Clock(condition::Bool, startInterval::Float64=0.0) 
-Clock(c::Clock, solverMethod) 
+Clock(interval::Float64)
+Clock(condition::Bool, startInterval::Float64=0.0)
+Clock(c::Clock, solverMethod)
 
 previous(x)
 
 sample(u, c::Clock)
-sample(u) 
+sample(u)
 
 hold(u) = u
 
@@ -31,7 +27,7 @@ superSample(u, factor::Int)
 shiftSample(u, shiftCounter::Int, resolution::Int=1)  # Add version with rational number
 backSample(u, backCounter::Int, resolution::Int=1)  # Add version with rational number
 
-noClock() 
+noClock()
 
 interval(u)
 
@@ -50,12 +46,7 @@ mutable struct Store
     previous::Vector{Any}
     nextPrevious::Vector{Any}
     crossings::Vector{Any}
-  
-    @static if VERSION < v"0.7.0-DEV.2005"
-      Store() = new(zeros(nClock), Array{Any}(nSample), zeros(nPrevious), zeros(nPrevious), zeros(nCrossings))
-    else
-      Store() = new(zeros(nClock), Array{Any}(undef, nSample), zeros(nPrevious), zeros(nPrevious), zeros(nCrossings))
-    end    
+    Store() = new(zeros(nClock), Array{Any}(undef, nSample), zeros(nPrevious), zeros(nPrevious), zeros(nCrossings))
 end
 
 isLog(m) = true
@@ -66,14 +57,14 @@ isLog(m) = true
 allInstances(s) = return s
 
 
-function Clock(interval::ModiaMath.Time, m::ModiaSimulationModel, nr::Int) 
+function Clock(interval::ModiaMath.Time, m::ModiaSimulationModel, nr::Int)
     if ModiaToModiaMath.isPreInitial(m)
         if ModiaToModiaMath.isLogEvents(m)
             println("        in Clock, nr = $nr (isPreInitial)")
         end
         return false
     end
-  
+
     if ModiaToModiaMath.isInitial(m)
         if ModiaToModiaMath.isLogEvents(m)
             println("        in Clock, nr = $nr (isInitial)")
@@ -85,14 +76,14 @@ function Clock(interval::ModiaMath.Time, m::ModiaSimulationModel, nr::Int)
 
         m.store.clock[nr] = ModiaMath.getTime(m)
         ModiaToModiaMath.setNextEvent!(m, m.store.clock[nr])
-    
+
     elseif ModiaToModiaMath.isEvent(m) && ModiaToModiaMath.isAfterSimulationStart(m)
         tick = abs(ModiaMath.getTime(m) - m.store.clock[nr]) < 1E-10
         if tick
             if ModiaToModiaMath.isLogEvents(m)
                 println("        in Clock, nr = $nr (isEvent; clock is active)")
             end
-        
+
             m.store.clock[nr] = ModiaMath.getTime(m) + interval
             ModiaToModiaMath.setNextEvent!(m, m.store.clock[nr])
             return true
@@ -115,7 +106,7 @@ positiveChange(crossing::Float64, m::ModiaSimulationModel, nr::Int; restart::Mod
 positiveEdge(crossing::Float64, m::ModiaSimulationModel, nr::Int; restart::ModiaToModiaMath.EventRestart=Restart) =
          ModiaToModiaMath.positiveEdge!(crossing, m, nr; restart=restart)
 
-function sample(v, clock::Bool, m::ModiaSimulationModel, nr::Int) 
+function sample(v, clock::Bool, m::ModiaSimulationModel, nr::Int)
     if ModiaToModiaMath.isPreInitial(m)
         if ModiaToModiaMath.isLogEvents(m)
             println("        in sample, nr = $nr (isPreInitial)")
@@ -128,25 +119,25 @@ function sample(v, clock::Bool, m::ModiaSimulationModel, nr::Int)
 
         if typeof(m.store) == Nothing
             m.store = Store()
-        end 
+        end
 
         m.store.sample[nr] = v
         return v
     end
-  
-    if clock 
+
+    if clock
         if ModiaToModiaMath.isLogEvents(m)
             println("        in sample, nr = $nr (clock is active)")
         end
         m.store.sample[nr] = v;
         return v
     else
-        return m.store.sample[nr] 
+        return m.store.sample[nr]
     end
 end
 
 # initPrevious not used
-function initPrevious(v, m::ModiaSimulationModel, nr::Int) 
+function initPrevious(v, m::ModiaSimulationModel, nr::Int)
     if ModiaToModiaMath.isPreInitial(m)
         if ModiaToModiaMath.isLogEvents(m)
             println("        in initPrevious, nr = $nr (isPreInitial)")
@@ -165,11 +156,11 @@ function initPrevious(v, m::ModiaSimulationModel, nr::Int)
         m.store.previous[nr] = v
         return v
     else
-        return m.store.previous[nr]   
+        return m.store.previous[nr]
     end
 end
 
-function previous(v, clock::Bool, m::ModiaSimulationModel, nr::Int) 
+function previous(v, clock::Bool, m::ModiaSimulationModel, nr::Int)
     if ModiaToModiaMath.isPreInitial(m)
         if ModiaToModiaMath.isLogEvents(m)
             println("        in previous, nr = $nr (isPreInitial)")
@@ -183,14 +174,14 @@ function previous(v, clock::Bool, m::ModiaSimulationModel, nr::Int)
 
         if typeof(m.store) == Nothing
             m.store = Store()
-        end      
+        end
 
         m.store.previous[nr]     = v
         m.store.nextPrevious[nr] = v
         return v
     end
-  
-    if clock 
+
+    if clock
         m.store.previous[nr] = m.store.nextPrevious[nr];
         if ModiaToModiaMath.isLogEvents(m)
             println("        in previous, nr = $nr (clock is active)")
@@ -205,11 +196,11 @@ function previous(v, clock::Bool)
 end
 =#
 
-function updatePrevious(v, m::ModiaSimulationModel, nr::Int) 
+function updatePrevious(v, m::ModiaSimulationModel, nr::Int)
     if ModiaToModiaMath.isInitial(m)
         if typeof(m.store) == Nothing
             m.store = Store()
-        end 
+        end
     end
 
     if ModiaToModiaMath.isEvent(m) && ModiaToModiaMath.isAfterSimulationStart(m)

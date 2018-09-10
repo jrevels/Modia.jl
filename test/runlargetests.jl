@@ -4,11 +4,7 @@ println("\nRunLargeTest: Demonstrates arrays of components and timing.")
 using Modia
 using Modia.Electric
 
-@static if VERSION < v"0.7.0-DEV.2005"
-    using Base.Test
-else
-    using Test
-end
+using Test
 
 @testset "RunLargeTests" begin
 
@@ -23,7 +19,7 @@ end
             connect(R.n, C.p)
             connect(C.n, V.n)
         end
-    end 
+    end
 
     nFilters = 100
     @model ManyFilters begin

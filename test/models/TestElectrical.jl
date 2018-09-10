@@ -4,11 +4,7 @@ using ModiaMath:plot
 using Modia
 using Modia.Electric
 
-@static if VERSION < v"0.7.0-DEV.2005"
-    using Base.Test
-else
-    using Test
-end
+using Test
 
 result = simulate(Resistor, 1)
 @test result["i"][end] == 0.0
@@ -22,7 +18,7 @@ result = simulate(Resistor, 1)
         connect(R1.p, R2.p)
         connect(R1.n, R2.n)
     end
-end 
+end
 
 result = simulate(ParallelResistors, 1)
 @test result["R1.i"][end] == 0.0
@@ -41,7 +37,7 @@ result = simulate(ParallelResistors, 1)
         connect(C1.n, C2.n)
         connect(C1.n, ground.p)
     end
-end 
+end
 
 result = simulate(ParallelCapacitors, 1)
 @test result["C2.v"][end] == 1.0
@@ -65,7 +61,7 @@ result = simulate(ParallelCapacitors, 1)
         connect(R2.n, L2.p)
         connect(L2.n, V.n)
     end
-end 
+end
 
 # result = simulate(InductorsInSeries, 1)
 
@@ -87,7 +83,7 @@ end
         connect(C.n, C2.n)
         connect(C.p, C2.p)
     end
-end 
+end
 
 # simulate(ParallelCapacitorCircuit, 1, useKinsol=true, removeSingularities=false, logTranslation=true)
 # checkSimulation(ParallelCapacitorCircuit, 1, "C1.v", 1.0, useKinsol=true, removeSingularities=false)

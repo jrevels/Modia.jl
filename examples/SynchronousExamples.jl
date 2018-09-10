@@ -6,11 +6,7 @@ using Modia
 using Modia.Synchronous: sample, Clock, previous, hold
 using ModiaMath:plot
 
-@static if VERSION < v"0.7.0-DEV.2005"
-    using Base.Test
-else
-    using Test
-end
+using Test
 
 @testset "Synchronous" begin
 
@@ -18,7 +14,7 @@ end
   a = Var(size=())
   b = Var(size=())
   c = Var(start=0.0)
-  obs=Float(start=0.0)  
+  obs=Float(start=0.0)
 @equations begin
   a = Clock(0.1)
   b = sample(time, a)
@@ -44,7 +40,7 @@ plot(result, ("obs"), heading="SynchronousOperators",figure=15)
   der(x) = v
   m*der(v) = f - k*x - d*v
   end
-end 
+end
 
 @model SpeedControl begin
   @extends MassWithSpringDamper(k=0)
@@ -65,7 +61,7 @@ end
   f = hold(u)
   der(fobs) = 1000000*(f-fobs)
   end
-end 
+end
 
 result = simulate(SpeedControl, 5.0, storeEliminated=false, logSimulation=false)
 plot(result, ("v", "fobs"), heading="SpeedControl", figure=15)
@@ -75,14 +71,14 @@ plot(result, ("v", "fobs"), heading="SpeedControl", figure=15)
   @extends MassWithSpringDamper(k=0)
   @inherits v, f
   K = 2 # Gain of speed P controller
-  Ti = 2 # Integral time 
+  Ti = 2 # Integral time
   vref = 100 # Speed reference
   dt=0.1 # sampling interval
   vd=Float()
   u=Float(start=0)
   e=Float()
   intE=Float(start=0)
-    
+
   fobs=Float(start=0.0)
 @equations begin
   # speed sensor
@@ -97,7 +93,7 @@ plot(result, ("v", "fobs"), heading="SpeedControl", figure=15)
   f = hold(u)
   der(fobs) = 1000000*(f-fobs)
   end
-end 
+end
 
 result = simulate(SpeedControlPI, 5.0, storeEliminated=false, logSimulation=false)
 plot(result, ("v", "fobs"), heading="SpeedControlPI", figure=16)
@@ -142,8 +138,8 @@ end
 
 
 @model DiscretePIController begin
-  K=0.1 # Gain 
-  Ti=1E10 # Integral time 
+  K=0.1 # Gain
+  Ti=1E10 # Integral time
   dt=1.0 # sampling interval
   ref=1 # set point
   u=Float(); ud=Float(size=())
@@ -161,7 +157,7 @@ end
   yd = K*(e + intE/Ti)
   # actuator
   y = hold(yd)
-  
+
   der(fobs) = 100000*(y-fobs)
   end
 end

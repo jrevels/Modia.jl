@@ -3,12 +3,8 @@
 """
 module TestExactlyRemoveSingularities
 
-@static if VERSION < v"0.7.0-DEV.2005"
-  using Base.Test
-else
-  using Test
-  using SparseArrays
-end
+using Test
+using SparseArrays
 
 include("../../src/symbolic/ExactlyRemoveSingularities.jl")
 
@@ -47,14 +43,14 @@ end
 AA = [1 2 0 4 5 6 7 8
       0 2 0 4 5 6 7 8
       0 0 0 0 0 0 0 0
-      0 0 0 0 0 0 0 0      
+      0 0 0 0 0 0 0 0
       0 0 0 2 5 6 7 8
       0 0 0 4 5 6 7 8]
 X  = [2 3 4 5 6 7 8 9]'
 BB = AA*X
-      
+
 C  = [1 2 3 4 5 6
-      2 1 0 0 0 0 
+      2 1 0 0 0 0
       3 0 1 0 0 0
       4 0 0 1 0 0
       5 0 0 0 1 0
@@ -108,7 +104,7 @@ end
 
 A4  = [    1    -1    -1    0      0       0;
            0     0     0    1      1       0;
-           1    -1    -1   -1     -1       0;            
+           1    -1    -1   -1     -1       0;
            1    -1     0    0      0      -1;
            0     0     0   -1     -1       0]
 B4 = fill(0,5,0)
@@ -150,7 +146,7 @@ err = maxNorm(A5fac*x4)
 
 @test err == 0
 @test rk5 == 3
-          
+
 end
 
 @testset "... Resistor in parallel to a resistor without ground (dense and sparse form)" begin
@@ -179,11 +175,8 @@ Av = [    1    -1    -1    0      0       0;
           1    -1     0    0      0      -1;
           0     0     0   -1     -1       0];
 
-  @static if VERSION < v"0.7.0-DEV.2005"
-    ix = Array{Int64}(0)
-  else
-    ix = Array{Int64}(undef, 0)
-  end
+ix = Array{Int64}(undef, 0)
+
 iy = [1,2]
 r  = removeSingularities(Av,ix,iy)
 # printRemoveSingularities(Av,r,names)
@@ -239,7 +232,7 @@ r  = removeSingularities(Av,ix,iy);
 @test eqx     == [3]   # Replace equation 3 by A1*x1 + A2*x2 = 0
 @test A1[1,1] == 1     # A1 = [1]
 @test A2[1,1] == -1    # A2 = [-1]
-      
+
 # println("\nCapacitors with sparse description")
 sparse_Av = sparse(Av)
 r = removeSingularities(sparse_Av,ix,iy);

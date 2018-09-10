@@ -10,17 +10,13 @@ export openLogModia, logModia, loglnModia, closeLogModia, logFileModia, setOptio
 
 global logTranslation = logTranslationDefault
 
-@static if VERSION < v"0.7.0-DEV.2005"
-    global defaultOutput = STDOUT
-else
-    global defaultOutput = stdout
-end
+global defaultOutput = stdout
 
 global logFileModia = defaultOutput
 global defaultLogName
 setDefaultLogName(name) = global defaultLogName = name
 
-function setOptions(options) 
+function setOptions(options)
     global logTranslation = logTranslationDefault
     if haskey(options, :logTranslation)
         global logTranslation = options[:logTranslation]
@@ -32,7 +28,7 @@ function setOptions(options)
         global logOnFile = options[:logOnFile]
         @show logOnFile
     end
-  
+
     global logName = defaultLogName
     if haskey(options, :logName)
         global logName = options[:logName]
@@ -40,7 +36,7 @@ function setOptions(options)
     end
 end
 
-function openLogModia() 
+function openLogModia()
     if logOnFile && logTranslation
         logDirectory = homedir() * "/" * "ModiaResults"
 
@@ -88,10 +84,6 @@ function increaseLogCategory(category)
     end
 end
 
-@static if VERSION < v"0.7.0-DEV.2005"
-    printstyled(s, i; bold=false, color=:black) = print_with_color(color, s, i, bold=bold)
-end  
-
 function printTestStatus()
     global nOK
     global nNOTOK
@@ -105,7 +97,7 @@ function printTestStatus()
     println("Log category statistics:")
     for (cat, count) in logCategories
         println(cat, ": ", count)
-    end    
+    end
     println("\n----------------------\n")
     println()
     resetTestStatus()

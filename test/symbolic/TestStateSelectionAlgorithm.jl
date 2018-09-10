@@ -7,11 +7,7 @@
 ################################################
 module TestStateSelectionAlgorithm
 
-@static if VERSION < v"0.7.0-DEV.2005"
-    using Base.Test
-else
-    using Test
-end
+using Test
 
 include(joinpath("..", "..", "src", "symbolic", "StateSelection.jl"))
 using .StateSelection
@@ -21,7 +17,7 @@ isAlgebraic(v::Int, A::Vector{Int}, Arev::Vector{Int}) = A[v] == 0 && Arev[v] ==
 
 """
     checkSortedEquationGraph(eq,Vx,Vderx) - check result of sortedEquationGraph(..)
-    
+
 - eq   : Result of sortedEquationGraph(..)
 - Vx   : Required value of eq.Vx
 - Vderx: Required value of eq.Vderx
@@ -32,7 +28,7 @@ function checkSortedEquationGraph(eq;nx=0, nc=0, Vx=Int[], Vderx=Int[])
     @test eq.nc    == nc
     @test eq.Vx    == Vx
     @test eq.Vderx == Vderx
-   
+
    # Check correct indices
     for i in eachindex(eq.Vx)
         vx = eq.Vx[i]
@@ -41,16 +37,16 @@ function checkSortedEquationGraph(eq;nx=0, nc=0, Vx=Int[], Vderx=Int[])
                 vxInt_index_isZero = eq.VxRev[ eq.Arev[vx] ] == 0
                 @test vxInt_index_isZero == false
             end
-        end    
+        end
     end
-   
+
     for i in eachindex(eq.Vderx)
         vderx = eq.Vderx[i]
         if vderx == 0
             if !isAlgebraic(eq.Vx[i], eq.A, eq.Arev)
                 vx = eq.Vx[i]
                 dervx = eq.A[vx]
-                @test (dervx == 0) == false                            
+                @test (dervx == 0) == false
                 if dervx != 0
                     der_vx_index = eq.VxRev[ dervx ]
                     @test (der_vx_index == 0) == false
@@ -62,7 +58,7 @@ end
 
 
 
-@testset "\nTest StateSelection algorithm" begin 
+@testset "\nTest StateSelection algorithm" begin
 
     @testset "... Test two coupled inertias (all/subset/no unknowns can be solved for)" begin
 
@@ -175,7 +171,7 @@ vNames:
     @testset "... Test simple sliding mass model" begin
 
 
-#= 
+#=
 
   1: 0 = r - n*s
   2: 0 = v - der(r)
@@ -254,7 +250,7 @@ vNames:
 
     @testset "... Test Multi-index DAE (with and without tearing)" begin
 
-    #= 
+    #=
   1: 0 = u1(t) + x1 - x2
   2: 0 = u2(t) + x1 + x2 - x3 + der(x6)
   3: 0 = u3(t) + x1 + der(x3) - x4
@@ -351,10 +347,10 @@ vNames:
         eq = getSortedEquationGraph!(eqInit, Gsolvable)
         # printSortedEquationGraph(eq)
 
-        checkSortedEquationGraph(eq; nx=21, nc=12, Vx=[7, 6, 19, 12, 20, 16, 1, 2, 3, 8, 9, 10, 4, 18, 0], 
+        checkSortedEquationGraph(eq; nx=21, nc=12, Vx=[7, 6, 19, 12, 20, 16, 1, 2, 3, 8, 9, 10, 4, 18, 0],
                                            Vderx=[0, 0, 0, 0, 21, 17, 0, 0, 0, 13, 14, 15, 11, 0, 5])
 
-                                           
+
         # println("\n\n... Test Multi-Index DAE WITH tearing")
         Gsolvable    = copy(G)
         Gsolvable[8] = fill(0, 0)  # "0 = u8(t) + x8 - sin(x8)" cannot be solved for x8
@@ -362,7 +358,7 @@ vNames:
         eq = getSortedEquationGraph!(eqInit, Gsolvable)
         #printSortedEquationGraph(eq)
 
-        checkSortedEquationGraph(eq; nx=8, nc=4, Vx=[7, 19, 20, 2, 9, 18], 
+        checkSortedEquationGraph(eq; nx=8, nc=4, Vx=[7, 19, 20, 2, 9, 18],
                                          Vderx=[0, 0, 21, 0, 14, 0])
 
     end

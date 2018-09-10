@@ -1,7 +1,7 @@
 #=
 Modia main module.
 
-* Developers: Hilding Elmqvist, Mogram AB, Toivo Henningsson, Lund and Martin Otter, DLR 
+* Developers: Hilding Elmqvist, Mogram AB, Toivo Henningsson, Lund and Martin Otter, DLR
 * Copyright (c) 2016-2018: Hilding Elmqvist, Toivo Henningsson, Martin Otter
 * License: MIT (expat)
 =#
@@ -51,21 +51,13 @@ const Date = "2018-09-08"
 #println(" \n\nWelcome to Modia - Dynamic MODeling and Simulation in julIA")
 print(" \n\nWelcome to ")
 print("Mod")
-@static if VERSION < v"0.7.0-DEV.2005"
-    print_with_color(:red, "ia", bold=true)
-    print(" - ")
-    print_with_color(:light_black, "Dynamic ")
-    print("Mod")
-    print_with_color(:light_black, "eling and Simulation with Jul")
-    print_with_color(:red, "ia", bold=true)
-else
-    printstyled("ia", bold=true, color=:red)
-    print(" - ")
-    printstyled("Dynamic ", color=:light_black)
-    print("Mod")
-    printstyled("eling and Simulation with Jul", color=:light_black)
-    printstyled("ia", bold=true, color=:red)
-end
+
+printstyled("ia", bold=true, color=:red)
+print(" - ")
+printstyled("Dynamic ", color=:light_black)
+print("Mod")
+printstyled("eling and Simulation with Jul", color=:light_black)
+printstyled("ia", bold=true, color=:red)
 
 println()
 println("Version $Version ($Date)")

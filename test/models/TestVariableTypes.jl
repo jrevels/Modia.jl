@@ -2,14 +2,9 @@ module TestVariableTypes
 
 println("\nTestVariableTypes: Demonstrating the handling of various variable types")
 
-@static if VERSION < v"0.7.0-DEV.2005"
-    using Base.Test
-    identity(m,n) = eye(m,n)
-else
-    using Test
-    using LinearAlgebra
-    identity(m, n) = Matrix{Float64}(I, m, n)
-end
+using Test
+using LinearAlgebra
+identity(m, n) = Matrix{Float64}(I, m, n)
 
 using Modia
 using ModiaMath: plot
@@ -71,7 +66,7 @@ const Vec3 = SVector{3,Float64}
             der(c1) = Complex(1.0, 0.0)
             # der(c2) = Complex(1.5, 2.5)  # InexactError # Allocation of Complex in state vector not supported yet.
         end
-    end 
+    end
 
     result = checkSimulation(TestVariableTypes1, 3, "i", 1)
     @show result["f"][end]
@@ -101,7 +96,7 @@ const Vec3 = SVector{3,Float64}
             der(c1) = [Complex(2.0, 0.0), Complex(4.0, 0.0)]
             # der(c2) = Complex(1.0, 2.0)  # InexactError
         end
-    end 
+    end
 
     result = checkSimulation(TestArrays1, 1, "i", [1,2])
     # result = checkSimulation(TestArrays1, 1, "i", [1,2], expandArrayIncidence=true)
@@ -145,7 +140,7 @@ const Vec3 = SVector{3,Float64}
             v5 = [1,2,3]
             v6 = 10.0u"V"
         end
-    end 
+    end
 
     result = simulate(TestVariableTypes2, 1, storeEliminated=false)
 
@@ -163,23 +158,23 @@ const Vec3 = SVector{3,Float64}
         v4 = Var()
         m = 3.1u"kg" + 2.5kg + 3g
         F = 2.5u"kg*m/s^2" + 2u"N"
-        a = Var() # (T=typeof(1.0u"m/s^2")) 
+        a = Var() # (T=typeof(1.0u"m/s^2"))
         l = 2u"m" + 30cm + 55.7mm  # + 2m not possible due to variable m
         @equations begin
             # SIunits
             v1 = 10.0u"m"
             v2 = 5.5u"V"
             # Unitful
-            v3 = 1u"kg" + 2u"g" + 10 * sin(2 * time) * u"hg"  
+            v3 = 1u"kg" + 2u"g" + 10 * sin(2 * time) * u"hg"
             #  der(v3) = 1.0u"kg/s"  # Differential equations with units are not handled yet
             v4 = 3u"kg" * 0.5u"m/s^2" + time * u"N"
             a = F / m
         end
-    end 
+    end
 
     result = simulate(TestVariableUnits1, 1)
     #result = checkSimulation(TestVariableUnits1, 1, "v1", 10u"m")
-    
+
     @show result["v2"][end]
     @show result["v3"][end]
     @show result["v4"][end]
